@@ -15,21 +15,27 @@ export async function cadastrarUsuario(dados: {
       body: JSON.stringify(dados)
     })
 
-    const textoErro = await res.text()
+    const conteudo = await res.text() // lê apenas uma vez
 
     if (!res.ok) {
+      const msg = conteudo.toLowerCase()
       if (
         res.status === 409 ||
-        textoErro.toLowerCase().includes('e-mail já cadastrado') ||
-        textoErro.toLowerCase().includes('email já cadastrado')
+        msg.includes('e-mail já cadastrado') ||
+        msg.includes('email já cadastrado')
       ) {
         throw new Error('Este e-mail já está cadastrado. Tente outro ou faça login.')
       }
 
-      throw new Error(textoErro || 'Erro ao registrar. Tente novamente.')
+      throw new Error(conteudo || 'Erro ao registrar. Tente novamente.')
     }
 
-    return await res.json()
+    // Tenta converter o conteúdo para JSON (se aplicável)
+    try {
+      return JSON.parse(conteudo)
+    } catch {
+      return {} // ou null, se não houver corpo JSON válido
+    }
 
   } catch (err: unknown) {
     if (err instanceof Error) {
@@ -56,9 +62,8 @@ export async function loginUsuario(email: string, senha: string) {
     const texto = await res.text()
 
     if (!res.ok) {
-      // Tratamento de mensagens personalizadas
+      const msg = texto.toLowerCase()
       if (res.status === 401) {
-        const msg = texto.toLowerCase()
         if (msg.includes('senha')) {
           throw new Error('Senha incorreta')
         } else if (msg.includes('email')) {

@@ -1,10 +1,10 @@
 'use client'
 
-import { useState, useRef } from 'react'
+import { useEffect, useState, useRef } from 'react'
+import { useRouter } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
 
-// Tipagens para reconhecimento de voz
 type SpeechRecognitionAlternative = {
   transcript: string
   confidence: number
@@ -37,18 +37,29 @@ type SpeechRecognitionInstance = {
 }
 
 export default function Chatbot() {
+  const router = useRouter()
   const [mensagens, setMensagens] = useState([
     {
       remetente: 'bot',
-      texto: 'Olá! Eu sou o assistente virtual Trip ~\n\nEm relação as linhas de trêns e metrôs, como posso te ajudar?',
+      texto: 'Olá! Eu sou o assistente virtual Trip ~\n\nEm relação às linhas de trens e metrôs, como posso te ajudar?',
     },
   ])
   const [input, setInput] = useState('')
   const [enviando, setEnviando] = useState(false)
   const [gravando, setGravando] = useState(false)
+  const [logado, setLogado] = useState(false)
 
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
   const fimDasMensagensRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+    if (!token) {
+      router.push('/')
+    } else {
+      setLogado(true)
+    }
+  }, [router])
 
   const formatarTexto = (texto: string) => {
     return texto.replace(/\n/g, '<br>')
@@ -85,7 +96,7 @@ export default function Chatbot() {
     setMensagens([
       {
         remetente: 'bot',
-        texto: 'Olá! Eu sou o assistente virtual Trip ~\n\nEm relação as linhas de trêns e metrôs, como posso te ajudar?',
+        texto: 'Olá! Eu sou o assistente virtual Trip ~\n\nEm relação às linhas de trens e metrôs, como posso te ajudar?',
       },
     ])
     try {
@@ -157,6 +168,17 @@ export default function Chatbot() {
           >
             LIMPAR CONVERSA
           </button>
+          {logado && (
+            <button
+              onClick={() => {
+                localStorage.removeItem('token')
+                router.push('/')
+              }}
+              className="text-white text-xs sm:text-sm px-4 py-2 rounded-md border border-white font-bold hover:bg-white hover:text-[#DA3368] shadow-md transition"
+            >
+              SAIR
+            </button>
+          )}
         </div>
       </header>
 
