@@ -48,6 +48,7 @@ export default function Chatbot() {
   const [enviando, setEnviando] = useState(false)
   const [gravando, setGravando] = useState(false)
   const [logado, setLogado] = useState(false)
+  const [nomeUsuario, setNomeUsuario] = useState<string | null>(null)
 
   const recognitionRef = useRef<SpeechRecognitionInstance | null>(null)
   const fimDasMensagensRef = useRef<HTMLDivElement | null>(null)
@@ -55,9 +56,12 @@ export default function Chatbot() {
   useEffect(() => {
     const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
     if (!token) {
+      alert('Você precisa estar logado para acessar o assistente virtual.')
       router.push('/')
     } else {
       setLogado(true)
+      const nome = localStorage.getItem('nome')
+      setNomeUsuario(nome)
     }
   }, [router])
 
@@ -81,7 +85,7 @@ export default function Chatbot() {
         body: JSON.stringify({ msg: novaMensagem.texto }),
       })
 
-      const data = await resposta.json() // <-- aqui está a correção
+      const data = await resposta.json()
       const texto = data.resposta || 'Erro: resposta vazia'
 
       setMensagens((msgs) => {
@@ -155,8 +159,13 @@ export default function Chatbot() {
       style={{ backgroundImage: "url('/background-chatbot.png')" }}
     >
       <header className="w-full px-6 md:px-10 pt-4 flex items-center justify-between gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <Image src="/Logo.png" alt="Logo TRIP" width={120} height={60} priority />
+          {nomeUsuario && (
+            <span className="text-white text-sm sm:text-base font-semibold">
+              Olá, {nomeUsuario.split(' ')[0]}!
+            </span>
+          )}
         </div>
         <div className="flex gap-2">
           <Link
@@ -175,6 +184,8 @@ export default function Chatbot() {
             <button
               onClick={() => {
                 localStorage.removeItem('token')
+                localStorage.removeItem('nome')
+                localStorage.removeItem('id')
                 router.push('/')
               }}
               className="text-white text-xs sm:text-sm px-4 py-2 rounded-md border border-white font-bold hover:bg-white hover:text-[#DA3368] shadow-md transition"

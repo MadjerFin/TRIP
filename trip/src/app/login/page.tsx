@@ -49,7 +49,11 @@ export default function LoginPage() {
       if (err instanceof Error) {
         const msg = err.message.toLowerCase()
 
-        if (msg.includes('inválido') || msg.includes('invalid')) {
+        if (msg.includes('senha')) {
+          novosErros.senha = 'Senha incorreta'
+        } else if (msg.includes('e-mail') || msg.includes('email')) {
+          novosErros.email = 'E-mail não cadastrado'
+        } else if (msg.includes('inválido') || msg.includes('invalid')) {
           novosErros.email = 'E-mail ou senha inválidos'
           novosErros.senha = ' '
         } else {
@@ -68,7 +72,6 @@ export default function LoginPage() {
       className={`${poppins.className} relative w-full h-screen flex flex-col bg-cover bg-center overflow-x-hidden`}
       style={{ backgroundImage: "url('/background-conta.png')" }}
     >
-      {/* Header */}
       <header className="w-full px-6 md:px-10 pt-4 flex items-center justify-between">
         <Image src="/Logo.png" alt="Logo TRIP" width={140} height={80} priority />
         <div className="flex gap-4">
@@ -77,7 +80,6 @@ export default function LoginPage() {
         </div>
       </header>
 
-      {/* Área principal */}
       <div className="flex flex-1 w-full flex-col lg:flex-row items-center justify-between px-6 md:px-30">
         <div className="flex flex-col justify-center items-center lg:items-start gap-6 max-w-[500px] w-full h-full pt-4 lg:pt-20 lg:ml-36 xl:ml-48 text-center lg:text-left">
           <h1 className="text-[28px] sm:text-[32px] md:text-[36px] text-white leading-snug font-bold">
@@ -116,7 +118,7 @@ export default function LoginPage() {
             <input
               type="password"
               name="senha"
-              placeholder={errosCampo.senha ? 'Senha incorreta' : 'Digite sua senha'}
+              placeholder={errosCampo.senha ? errosCampo.senha : 'Digite sua senha'}
               value={form.senha}
               onChange={handleChange}
               className={`px-6 py-3 rounded-md placeholder:italic placeholder:text-sm ${
@@ -145,7 +147,6 @@ export default function LoginPage() {
           <div className="flex justify-center lg:justify-start">
             <Image src="/parcerias-login.svg" alt="Parcerias" width={140} height={40} className="w-auto h-8 md:h-10" />
           </div>
-
         </div>
 
         <div className="hidden lg:flex items-end justify-end h-full pr-20 lg:pr-32 xl:pr-40">
