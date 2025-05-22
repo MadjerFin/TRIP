@@ -22,7 +22,9 @@ export async function cadastrarUsuario(dados: {
       if (
         res.status === 409 ||
         msg.includes('e-mail já cadastrado') ||
-        msg.includes('email já cadastrado')
+        msg.includes('email já cadastrado') ||
+        msg.includes('ora-00001') || // Oracle unique constraint
+        msg.includes('unique constraint') // mensagem genérica de duplicidade
       ) {
         throw new Error('Este e-mail já está cadastrado. Tente outro ou faça login.')
       }

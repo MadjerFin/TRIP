@@ -80,7 +80,10 @@ export default function Chatbot() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ msg: novaMensagem.texto }),
       })
-      const texto = await resposta.text()
+
+      const data = await resposta.json() // <-- aqui está a correção
+      const texto = data.resposta || 'Erro: resposta vazia'
+
       setMensagens((msgs) => {
         const novasMsgs = [...msgs.slice(0, -1), { remetente: 'bot', texto: formatarTexto(texto) }]
         return novasMsgs
