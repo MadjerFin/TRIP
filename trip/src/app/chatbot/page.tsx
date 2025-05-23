@@ -104,7 +104,7 @@ export default function Chatbot() {
     setMensagens([
       {
         remetente: 'bot',
-        texto: 'Olá! Eu sou o assistente virtual Trip ~\n\nEm relação às linhas de trens e metrôs, como posso te ajudar?',
+        texto: 'Olá! Eu sou o assistente virtual, Trip ~\n\nEm relação às linhas de trens e metrôs, como posso te ajudar?',
       },
     ])
     try {
