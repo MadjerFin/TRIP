@@ -108,7 +108,7 @@ export default function Chatbot() {
       },
     ])
     try {
-      await fetch('https://chatbot-trip.onrender.com/limpar_historico', { method: 'POST' }) /** **/
+      await fetch('https://chatbot-trip.onrender.com/limpar_historico', { method: 'POST' })
     } catch (e) {
       console.error('Erro ao limpar histórico', e)
     }
